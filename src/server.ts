@@ -1,6 +1,26 @@
-import 'dotenv/config'
-import app from './app'
+import Fastify from 'fastify'
+import cors from '@fastify/cors'
+import * as dotenv from 'dotenv'
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}.`)
-})
+import { cartRoutes } from './routes/cart'
+
+dotenv.config()
+
+async function bootstrap() {
+    const fastify = Fastify({
+        logger: true,
+    })
+
+    await fastify.register(cors, {
+        origin: true,
+    })
+
+    await fastify.register(cartRoutes)
+
+    await fastify.listen({
+        port: process.env.PORT,
+        host: '0.0.0.0',
+    })
+}
+
+bootstrap()
